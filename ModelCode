@@ -1,0 +1,84 @@
+#include <Servo.h>
+
+// Include the Ultrasonic library
+#include <Ultrasonic.h>
+
+// Define motor control pins
+#define ENABLE_PIN1 5  // Connect to first EN pin of the motor driver module
+#define ENABLE_PIN2 6  // Connect to second EN pin of the motor driver module
+
+// Define buzzer pin
+#define BUZZER_PIN 9  // Connect to a digital pin on your Arduino
+
+// Define the pins for the ultrasonic sensor
+#define TRIGGER_PIN 7  // Arduino pin connected to the trigger pin of the ultrasonic sensor
+#define ECHO_PIN 8     // Arduino pin connected to the echo pin of the ultrasonic sensor
+
+// Define the maximum distance (in centimeters) to trigger the motor
+#define MAX_DISTANCE 60
+
+// Create an instance of the Ultrasonic sensor
+Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
+
+Servo servoMotor;
+int angle = 15; // Starting angle
+
+void setup() {
+  // Set motor control pins as output
+  pinMode(ENABLE_PIN1, OUTPUT);
+  pinMode(ENABLE_PIN2, OUTPUT);
+
+  // Set buzzer pin as output
+  pinMode(BUZZER_PIN, OUTPUT);
+
+  // Attach the servo to pin 10
+  servoMotor.attach(10); 
+}
+
+void loop() {
+
+ // Rotate the servo motor from 10 to 100 degrees. You can adjust
+  for (int angle = 10; angle <= 100; angle++) {
+    servoMotor.write(angle); // Set the servo angle
+
+  // Measure the distance from the ultrasonic sensor
+  long distance = ultrasonic.distanceRead();
+
+  // Check if an object is within the maximum distance
+  if (distance <= MAX_DISTANCE) {
+    // Enable the motor using the first EN pin
+    digitalWrite(ENABLE_PIN2, HIGH);
+    digitalWrite(ENABLE_PIN1, LOW);
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(20);
+  } else {
+    // Disable the motor by setting both EN pins to LOW
+    digitalWrite(ENABLE_PIN2, LOW);
+    digitalWrite(ENABLE_PIN1, LOW);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(20);
+  }
+  }
+
+     for (int angle = 100; angle >= 10; angle--) {
+    servoMotor.write(angle); // Set the servo angle
+  
+    long distance = ultrasonic.distanceRead();
+
+  // Check if an object is within the maximum distance
+  if (distance <= MAX_DISTANCE) {
+    // Enable the motor using the first EN pin
+    digitalWrite(ENABLE_PIN2, HIGH);
+    digitalWrite(ENABLE_PIN1, LOW);
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(20);
+  } else {
+    // Disable the motor by setting both EN pins to LOW
+    digitalWrite(ENABLE_PIN2, LOW);
+    digitalWrite(ENABLE_PIN1, LOW);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(20);
+  }
+  }
+ }
+
